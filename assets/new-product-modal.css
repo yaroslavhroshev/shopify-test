@@ -1,0 +1,63 @@
+/* custom-product-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; 
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; 
+} */
+div:empty {
+  display: block;
+}
+
+.hide-modal {
+  display: none;
+}
+
+.custom-modal {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.custom-modal__background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: block;
+}
+
+.custom-modal__container {
+  width: 85%;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  z-index: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: auto;
+  max-height: calc(100% - 200px);
+  max-width: 1200px;
+}
+
+@media screen and (min-width: 768px) {
+  .custom-modal__container {
+    width: 80%;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .custom-modal__container {
+    width: 70%;
+  }
+}
