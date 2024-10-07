@@ -41,7 +41,8 @@
         id: product_form_id,
         class: 'form',
         novalidate: 'novalidate',
-        data-type: 'add-to-cart-form'
+        data-type: 'add-to-cart-form',
+        data-custom-modal-form: 'form'
       -%}
         <input
           type="hidden"
@@ -75,6 +76,7 @@
             type="submit"
             name="add"
             class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+            data-custom-modal-button
             {% if product.selected_or_first_available_variant.available == false
               or quantity_rule_soldout
               or product.selected_or_first_available_variant == null

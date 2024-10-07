@@ -338,7 +338,6 @@
               </quick-add-modal>
             {%- else -%}
               <product-form data-section-id="{{ section.id }}">
-                <custom-product-modal>
                 {%- form 'product',
                   card_product,
                   id: product_form_id,
@@ -364,7 +363,6 @@
                     aria-labelledby="{{ product_form_id }}-submit title-{{ section_id }}-{{ card_product.id }}"
                     aria-live="polite"
                     data-sold-out-message="true"
-                    data-custom-modal-button
                     {% if card_product.selected_or_first_available_variant.available == false %}
                       disabled
                     {% endif %}
@@ -387,8 +385,6 @@
                     {%- render 'loading-spinner' -%}
                   </button>
                 {%- endform -%}
-                  {%- render 'product-modal' -%}
-              </custom-product-modal>
               </product-form>
             {%- endif -%}
           </div>

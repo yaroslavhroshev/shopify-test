@@ -3,6 +3,13 @@
   if product == null
     assign placeholder = true
   endif
+  assign enable_modal = section.settings.enable_modal
+  assign modal_image = section.settings.modal_image
+  assign modal_heading = section.settings.modal_heading
+  assign modal_subheading = section.settings.modal_subheading
+  assign modal_money_save_message = section.settings.modal_money_save_message
+  assign show_modal_only_once = section.settings.show_modal_only_once
+  assign complete_the_look = section.settings.complete_the_look
 -%}
 
 <product-info
@@ -26,6 +33,7 @@
     {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
     {{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
   {% endunless %}
+  {{ 'new-product-modal.css' | asset_url | stylesheet_tag }}
 
   {%- style -%}
     .section-{{ section.id }}-padding {
@@ -44,6 +52,9 @@
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
+  {% if enable_modal %}
+    <script src="{{ 'new-product-modal.js' | asset_url }}" defer></script>
+  {% endif %}
 
   {% comment %} TODO: assign `product.selected_or_first_available_variant` to variable and replace usage to reduce verbosity {% endcomment %}
 
@@ -68,6 +79,12 @@
 
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
 
+  <custom-product-modal
+  data-enable-modal="{{ enable_modal }}"
+  data-product-id="{{ product.id }}"
+  data-complete-the-look="{{ complete_the_look }}"
+  data-show-modal-only-once="{{ show_modal_only_once }}"
+  >
   <section class="color-{{ section.settings.color_scheme }} {% if section.settings.secondary_background %}background-secondary{% else %}gradient{% endif %}">
     <div class="page-width section-{{ section.id }}-padding{% if section.settings.secondary_background %} isolate{% endif %}">
       <div class="featured-product product product--{{ section.settings.media_size }} grid grid--1-col gradient color-{{ section.settings.color_scheme }} product--{{ section.settings.media_position }}{% if section.settings.secondary_background == false %} isolate{% endif %} {% if product.media.size > 0 or section.settings.product == blank %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
@@ -453,6 +470,16 @@
       {% render 'product-media-modal', product: product, variant_images: variant_images %}
     </div>
   </section>
+  {%- 
+    render 'product-modal',
+    complete_the_look: complete_the_look,
+    modal_money_save_message: modal_money_save_message,
+    modal_heading: modal_heading,
+    modal_subheading: modal_subheading,
+    modal_image: modal_image,
+    product: product
+  -%}
+</custom-product-modal>
 
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
   {%- if section.settings.image_zoom == 'hover' -%}
@@ -1329,6 +1356,52 @@
     }
   ],
   "settings": [
+    {
+      "type": "header",
+      "content": "Custom modal settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_modal",
+      "label": "Enable modal window",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "modal_image",
+      "label": "Modal image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "modal_heading",
+      "label": "Modal heading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "modal_subheading",
+      "label": "Modal subheading"
+    },
+    {
+      "type": "text",
+      "id": "modal_money_save_message",
+      "label": "Modal save money message"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_modal_only_once",
+      "label": "Show modal only once per customer",
+      "default": false
+    },
+    {
+      "type": "product_list",
+      "id": "complete_the_look",
+      "label": "Complete the look products",
+      "limit": 2
+    },
+    {
+      "type": "header",
+      "content": "Basic featured product settings"
+    },
     {
       "type": "product",
       "id": "product",
