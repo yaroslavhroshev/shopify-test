@@ -80,10 +80,9 @@
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
 
   <custom-product-modal
-  data-enable-modal="{{ enable_modal }}"
-  data-product-id="{{ product.id }}"
-  data-complete-the-look="{{ complete_the_look }}"
+  data-product-id="{{ product.selected_or_first_available_variant.id }}"
   data-show-modal-only-once="{{ show_modal_only_once }}"
+  data-section-id="{{ section.id }}"
   >
   <section class="color-{{ section.settings.color_scheme }} {% if section.settings.secondary_background %}background-secondary{% else %}gradient{% endif %}">
     <div class="page-width section-{{ section.id }}-padding{% if section.settings.secondary_background %} isolate{% endif %}">
@@ -110,7 +109,6 @@
             data-url="{{ product.url }}"
           >
             {%- assign product_form_id = 'product-form-' | append: section.id -%}
-
             {%- for block in section.blocks -%}
               {%- case block.type -%}
                 {%- when '@app' -%}
@@ -477,9 +475,7 @@
     modal_heading: modal_heading,
     modal_subheading: modal_subheading,
     modal_image: modal_image,
-    product: product,
-    product_form_id: product_form_id,
-    section_id: section.id
+    product: product
   -%}
 </custom-product-modal>
 

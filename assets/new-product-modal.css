@@ -1,5 +1,9 @@
 /* basic styles */
 
+.stop-scroll {
+  overflow: hidden;
+}
+
 div:empty {
   display: block;
 }
@@ -59,7 +63,7 @@ h6 {
 }
 
 .custom-modal__container {
-  width: 85%;
+  width: 90%;
   background-color: #fff;
   z-index: 1;
   position: absolute;
@@ -157,15 +161,9 @@ h6 {
   margin-bottom: 32px;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 991px) {
   .custom-modal__container {
-    width: 80%;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .custom-modal__container {
-    width: 70%;
+    width: 100%;
   }
 }
 
@@ -253,25 +251,10 @@ h6 {
   cursor: pointer;
 }
 
-.custom-modal__buy-buttons .product-form__submit {
-  margin-bottom: 0;
-}
-
-.custom-modal__buy-buttons product-form {
+.custom-modal__buy-buttons button:last-of-type {
   flex: 1 1 35.75%;
-}
-
-.custom-modal__buy-buttons product-form button {
-  min-height: 44px;
   background-color: unset;
   color: #05117f;
   border: 1px solid #05117f;
-  font-size: 16px;
-  line-height: 24px;
   font-weight: 500;
-}
-
-.custom-modal__buy-buttons button::after,
-.custom-modal__buy-buttons button:not([disabled]):hover:after {
-  box-shadow: none;
 }

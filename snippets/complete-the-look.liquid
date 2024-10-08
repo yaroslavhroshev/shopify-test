@@ -1,7 +1,10 @@
 <ul class="complete-the-look">
   {%- if complete_the_look != blank -%}
     {%- for complete_the_look_product in complete_the_look -%}
-      <li class="complete-the-look__product">
+      <li
+        data-complete-the-look="{{ complete_the_look_product.selected_or_first_available_variant.id }}"
+        class="complete-the-look__product"
+      >
         {% if complete_the_look_product.featured_image != blank %}
           <div class="complete-the-look__product-image-wrapper">
             <a href="{{ complete_the_look_product.url }}">

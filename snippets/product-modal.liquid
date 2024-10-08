@@ -22,6 +22,7 @@
           aria-label="close-button"
           data-close-modal
           class="custom-modal__close-button"
+          data-custom-modal-close-button
         >
           {%- render 'close-icon' -%}
         </button>
@@ -67,10 +68,19 @@
             {%- render 'complete-the-look', complete_the_look: complete_the_look -%}
           </div>
           <div class="custom-modal__buy-buttons">
-            <button class="custom-modal__button">
+            <button
+              class="custom-modal__button"
+              data-custom-modal-add-complete-the-look
+            >
               {{ 'products.product.add_to_cart' | t }}
             </button>
-            {%- render 'buy-button', product: product, product_form_id: product_form_id, section_id: section.id -%}
+            <button
+              class="custom-modal__button"
+              data-custom-modal-close-add-button
+            >
+              {{ 'products.product.continue_to_the_cart' | t }}
+            </button>
+            {% comment %} {%- render 'buy-button', product: product, product_form_id: product_form_id, section_id: section.id -%} {% endcomment %}
           </div>
         </div>
       </div>
