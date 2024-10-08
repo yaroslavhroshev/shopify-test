@@ -1,5 +1,15 @@
 {%- liquid
   assign splited_modal_subheading = modal_subheading | split: '|'
+  assign complete_the_look_first_product = ''
+  assign complete_the_look_second_product = ''
+  for complete_the_look_product in complete_the_look
+    if forloop.index == 1
+      assign complete_the_look_first_product = complete_the_look_product.compare_at_price | minus: complete_the_look_product.price
+    elsif forloop.index == 2
+      assign complete_the_look_second_product = complete_the_look_product.compare_at_price | minus: complete_the_look_product.price
+    endif
+  endfor
+  assign savings = complete_the_look_first_product | plus: complete_the_look_second_product
 -%}
 
 <div data-custom-modal class="custom-modal hide-modal">
@@ -32,77 +42,35 @@
           </div>
         {% endif %}
         <div class="custom-modal__product-info">
-          <div class="custom-modal__title-wrapper">
+          <div class="custom-modal__modal-title-wrapper">
             {%- if modal_heading != blank -%}
               <h3>{{ modal_heading }}</h3>
             {%- endif -%}
           </div>
-          <div>
+          <div class="custom-modal__product-title-wrapper">
             {% if modal_subheading != blank %}
-              <p>
+              <p class="custom-modal__p">
                 {{ splited_modal_subheading[0] }}
                 <span>{{ product.title }}</span> {{ splited_modal_subheading[1] }}
               </p>
             {% endif %}
           </div>
-          <div>
-            {%- if modal_money_save_message != blank -%}
-              <p>{{ modal_money_save_message }}</p>
+          <div class="custom-modal__savings-message">
+            {%- if modal_money_save_message != blank and savings != blank -%}
+              <p class="custom-modal__p">
+                {{ modal_money_save_message }}
+                <span class="custom-modal__price">{{ savings | money_without_trailing_zeros | append: '!' }}</span>
+              </p>
             {%- endif -%}
           </div>
           <div class="custom-modal__complete-the-look-wrapper">
-            <ul class="complete-the-look">
-              {%- if complete_the_look != blank -%}
-                {%- for complete_the_look_product in complete_the_look -%}
-                  <li class="complete-the-look__product">
-                    {% if complete_the_look_product.featured_image != blank %}
-                      <div class="complete-the-look__product-image-wrapper">
-                        {{
-                          complete_the_look_product.featured_image
-                          | image_url: width: complete_the_look_product.featured_image.width
-                          | image_tag:
-                            loading: 'eager',
-                            width: complete_the_look_product.featured_image.width,
-                            height: complete_the_look_product.featured_image.height,
-                            class: 'complete-the-look__product-image',
-                            sizes: '10vw',
-                            widths: '80, 100, 120',
-                            alt: complete_the_look_product.featured_image.alt
-                        }}
-                      </div>
-                    {% endif %}
-                    <div class="complete-the-look__product-info">
-                      {%- if complete_the_look_product.title != blank -%}
-                        <div>
-                          <h4>{{ complete_the_look_product.title }}</h4>
-                        </div>
-                      {%- endif -%}
-                      {% if complete_the_look_product.variants.first.sku != blank %}
-                        <div>
-                          <p>{{ complete_the_look_product.variants.first.sku }}</p>
-                        </div>
-                      {% endif %}
-                      {% if complete_the_look_product.vendor != blank %}
-                        <div>
-                          <p>{{ complete_the_look_product.vendor }}</p>
-                        </div>
-                      {% endif %}
-                      {% if complete_the_look_product.price != blank
-                        or complete_the_look_product.compare_at_price != blank
-                      %}
-                        <div>
-                          <span>{{ complete_the_look_product.price | money }}</span
-                          ><span>{{ complete_the_look_product.compare_at_price | money }}</span>
-                        </div>
-                      {% endif %}
-                    </div>
-                  </li>
-                {%- endfor -%}
-                <script>
-                  console.log({{ complete_the_look | json }})
-                </script>
-              {%- endif -%}
-            </ul>
+            {%- render 'complete-the-look', complete_the_look: complete_the_look -%}
+          </div>
+          <div class="custom-modal__buy-buttons">
+            <button class="custom-modal__button">
+              {{ 'products.product.add_to_cart' | t }}
+            </button>
+            {%- render 'buy-button', product: product, product_form_id: product_form_id, section_id: section.id -%}
           </div>
         </div>
       </div>
