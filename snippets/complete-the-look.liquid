@@ -1,0 +1,56 @@
+<ul class="complete-the-look">
+  {%- if complete_the_look != blank -%}
+    {%- for complete_the_look_product in complete_the_look -%}
+      <li
+        data-complete-the-look="{{ complete_the_look_product.selected_or_first_available_variant.id }}"
+        class="complete-the-look__product"
+      >
+        {% if complete_the_look_product.featured_image != blank %}
+          <div class="complete-the-look__product-image-wrapper">
+            <a href="{{ complete_the_look_product.url }}">
+              {{
+                complete_the_look_product.featured_image
+                | image_url: width: complete_the_look_product.featured_image.width
+                | image_tag:
+                  loading: 'eager',
+                  width: complete_the_look_product.featured_image.width,
+                  height: complete_the_look_product.featured_image.height,
+                  class: 'complete-the-look__product-image',
+                  sizes: '10vw',
+                  widths: '80, 100, 120',
+                  alt: complete_the_look_product.featured_image.alt
+              }}
+            </a>
+          </div>
+        {% endif %}
+        <div>
+          {%- if complete_the_look_product.title != blank -%}
+            <div class="complete-the-look__product-title-wrapper">
+              <a href="{{ complete_the_look_product.url }}">{{ complete_the_look_product.title }}</a>
+            </div>
+          {%- endif -%}
+          {% if complete_the_look_product.vendor != blank %}
+            <div class="complete-the-look__product-vendor-wrapper">
+              <p>{{ complete_the_look_product.vendor }}</p>
+            </div>
+          {% endif %}
+          {% if complete_the_look_product.variants.first.sku != blank %}
+            <div class="complete-the-look__product-sku-wrapper">
+              <p>{{ complete_the_look_product.variants.first.sku }}</p>
+            </div>
+          {% endif %}
+          {% if complete_the_look_product.price != blank or complete_the_look_product.compare_at_price != blank %}
+            <div class="complete-the-look__product-compare-prices-wrapper">
+              <span class="custom-modal__price">
+                {{- complete_the_look_product.price | money_without_trailing_zeros -}}
+              </span>
+              <span class="custom-modal__compared-price">
+                {{- complete_the_look_product.compare_at_price | money_without_trailing_zeros -}}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+      </li>
+    {%- endfor -%}
+  {%- endif -%}
+</ul>

@@ -1,12 +1,87 @@
+{%- liquid
+  assign splited_modal_subheading = modal_subheading | split: '|'
+  assign complete_the_look_first_product = ''
+  assign complete_the_look_second_product = ''
+  for complete_the_look_product in complete_the_look
+    if forloop.index == 1
+      assign complete_the_look_first_product = complete_the_look_product.compare_at_price | minus: complete_the_look_product.price
+    elsif forloop.index == 2
+      assign complete_the_look_second_product = complete_the_look_product.compare_at_price | minus: complete_the_look_product.price
+    endif
+  endfor
+  assign savings = complete_the_look_first_product | plus: complete_the_look_second_product
+-%}
+
 <div data-custom-modal class="custom-modal hide-modal">
   <div class="custom-modal__background"></div>
   <div class="custom-modal__container">
-    <div>
-      <div>
-        <button></button>
-        <div></div>
-        <div>
-          <h2>Hello from modal</h2>
+    <div class="custom-modal__content-container">
+      <div class="custom-modal__content-wrapper">
+        <button
+          type="button"
+          aria-label="close-button"
+          data-close-modal
+          class="custom-modal__close-button"
+          data-custom-modal-close-button
+        >
+          {%- render 'close-icon' -%}
+        </button>
+        {% if modal_image != blank %}
+          <div class="custom-modal__image-wrapper">
+            {{
+              modal_image
+              | image_url: width: modal_image.width
+              | image_tag:
+                loading: 'eager',
+                width: modal_image.width,
+                height: modal_image.height,
+                class: 'custom-modal__image',
+                sizes: '(min-width: 768px) 50vw, 80vw',
+                widths: '300, 400, 500, 600, 700, 800, 900, 1000, 1050, 1100, 1200',
+                alt: modal_image.alt
+            }}
+          </div>
+        {% endif %}
+        <div class="custom-modal__product-info">
+          <div class="custom-modal__modal-title-wrapper">
+            {%- if modal_heading != blank -%}
+              <h3>{{ modal_heading }}</h3>
+            {%- endif -%}
+          </div>
+          <div class="custom-modal__product-title-wrapper">
+            {% if modal_subheading != blank %}
+              <p class="custom-modal__p">
+                {{ splited_modal_subheading[0] }}
+                <span>{{ product.title }}</span> {{ splited_modal_subheading[1] }}
+              </p>
+            {% endif %}
+          </div>
+          <div class="custom-modal__savings-message">
+            {%- if modal_money_save_message != blank and savings != blank -%}
+              <p class="custom-modal__p">
+                {{ modal_money_save_message }}
+                <span class="custom-modal__price">{{ savings | money_without_trailing_zeros | append: '!' }}</span>
+              </p>
+            {%- endif -%}
+          </div>
+          <div class="custom-modal__complete-the-look-wrapper">
+            {%- render 'complete-the-look', complete_the_look: complete_the_look -%}
+          </div>
+          <div class="custom-modal__buy-buttons">
+            <button
+              class="custom-modal__button"
+              data-custom-modal-add-complete-the-look
+            >
+              {{ 'products.product.add_to_cart' | t }}
+            </button>
+            <button
+              class="custom-modal__button"
+              data-custom-modal-close-add-button
+            >
+              {{ 'products.product.continue_to_the_cart' | t }}
+            </button>
+            {% comment %} {%- render 'buy-button', product: product, product_form_id: product_form_id, section_id: section.id -%} {% endcomment %}
+          </div>
         </div>
       </div>
     </div>
