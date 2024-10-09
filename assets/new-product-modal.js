@@ -20,6 +20,9 @@ class customProductModal extends HTMLElement {
       document.querySelector("cart-notification") ||
       document.querySelector("cart-drawer");
     this.sectionId = this.getAttribute("data-section-id");
+    this.productHandle = this.getAttribute("data-product-title");
+    this.variantId = this.getAttribute("data-variant-id");
+    this.cookieName = "show-modal-once";
   }
 
   connectedCallback() {
@@ -81,24 +84,48 @@ class customProductModal extends HTMLElement {
             body: JSON.stringify(formData),
           }
         );
+        const {items} = await request.json();
         const sections = this.cart
           .getSectionsToRender()
           .map((section) => section.id)
           .join(",");
-        const response = await request.json();
         await fetch(`/?section_id=${this.sectionId}&sections=${sections}`)
           .then((response) => response.json())
           .then((data) => {
-            document.getElementById("cart-notification-product").innerHTML =
-              data["cart-notification-product"];
+            const parser = new DOMParser();
+            const products = parser.parseFromString(
+              data["cart-notification-product"],
+              "text/html"
+            );
+            if (isMultiply) {
+              document.getElementById("cart-notification-product").innerHTML =
+                data["cart-notification-product"];
+            } else {
+              document.getElementById("cart-notification-product").innerHTML =
+                products.getElementById(
+                  `cart-notification-product-${items[0].key}`
+                ).innerHTML;
+            }
 
             document.getElementById("cart-notification-button").innerHTML =
               data["cart-notification-button"];
 
             document.getElementById("cart-icon-bubble").innerHTML =
               data["cart-icon-bubble"];
-            this.cart.open();
           });
+
+        const res = await fetch(
+          `/${this.productHandle}?variant=${this.variantId}&section_id=${this.sectionId}`
+        );
+        const html = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+        const sectionHtml = doc.querySelector(
+          `#Quantity-Form-${this.sectionId}`
+        ).innerHTML;
+        document.getElementById(`Quantity-Form-${this.sectionId}`).innerHTML =
+          sectionHtml;
+        this.cart.open();
       } catch (error) {
         console.warn("Error:", error);
       }
@@ -107,9 +134,20 @@ class customProductModal extends HTMLElement {
 
   setEventListeners() {
     if (this.addToCartOpenButton) {
+      console.log(this.showModalOnlyOnce)
       this.addToCartOpenButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        this.openModal();
+        if (this.showModalOnlyOnce) {
+          const isCookieExist = this.checkCookie();
+          if (!isCookieExist) {
+            this.createCookie();
+            e.preventDefault();
+            this.openModal();
+          }
+        } else {
+          this.checkCookie() ? this.deleteCookie() : null;
+          e.preventDefault();
+          this.openModal();
+        }
       });
     }
 
@@ -151,6 +189,30 @@ class customProductModal extends HTMLElement {
   openModal() {
     this.modalContainer.classList.remove("hide-modal");
     document.body.classList.add("stop-scroll");
+  }
+
+  createCookie() {
+    if (this.showModalOnlyOnce) {
+      const now = new Date();
+      now.setTime(now.getTime() + 24 * 60 * 60 * 1000);
+      document.cookie = `${
+        this.cookieName
+      }=productId-${this.productId};expires=${now.toUTCString()};path=/`;
+    }
+  }
+
+  checkCookie(name) {
+    const cookies = document.cookie.split(";");
+    for (let cookie of cookies) {
+      if (cookie.trim().startsWith(`${this.cookieName}=`)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  deleteCookie() {
+    document.cookie = `${this.cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
   }
 }
 

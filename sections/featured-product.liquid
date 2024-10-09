@@ -83,6 +83,8 @@
   data-product-id="{{ product.selected_or_first_available_variant.id }}"
   data-show-modal-only-once="{{ show_modal_only_once }}"
   data-section-id="{{ section.id }}"
+  data-product-handle="{{ product.handle }}"
+  data-variant-id="{{ product.variants.first.id }}"
   >
   <section class="color-{{ section.settings.color_scheme }} {% if section.settings.secondary_background %}background-secondary{% else %}gradient{% endif %}">
     <div class="page-width section-{{ section.id }}-padding{% if section.settings.secondary_background %} isolate{% endif %}">
